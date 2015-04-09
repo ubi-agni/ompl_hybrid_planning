@@ -26,9 +26,6 @@ protected:
 	                                   const double duration, base::State *resultTaskState) const = 0;
 	virtual void confTowardsTaskTransition(const base::State *confState, const base::State *taskState,
 	                                       const double duration, base::State *resultConfState) const = 0;
-
-	//TaskControlSpace *controlSpace_;
-
 };
 }
 }

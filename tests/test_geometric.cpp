@@ -94,6 +94,10 @@ public:
 		setStateConfInvalid(state);
 	}
 
+	double getMeasure() const {
+		return 0;
+	}
+
 protected:
 
 	virtual StateSpace* createTaskSpace()

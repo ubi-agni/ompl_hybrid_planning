@@ -45,13 +45,3 @@ bool TaskMotionValidator::checkMotion(const State *s1, const State *s2, std::pai
 	// pass on to DiscreteMotionValidator
 	return DiscreteMotionValidator::checkMotion(s1,s2,lastValid);
 }
-
-void TaskMotionValidator::computeMotionCost(const State *s1, const State *s2, 
-                                            double &cost, std::pair<double, double> &bounds) const
-{
-	// ensure that both states are valid
-	taskGeometricStateSpace_->makeStateValid(s1);
-	taskGeometricStateSpace_->makeStateValid(s2);
-	// pass on to DiscreteMotionValidator
-	DiscreteMotionValidator::computeMotionCost(s1,s2,cost,bounds);
-}

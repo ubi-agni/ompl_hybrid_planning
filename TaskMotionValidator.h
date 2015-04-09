@@ -22,8 +22,6 @@ public:
 	virtual bool checkMotion(const State *s1, const State *s2) const;
 	virtual bool checkMotion(const State *s1, const State *s2, std::pair<State*, double> &lastValid) const;
 
-	virtual void computeMotionCost(const State *s1, const State *s2, double &cost, std::pair<double, double> &bounds) const;
-
 protected:
 	TaskGeometricStateSpace* getAndCheckTaskGeometricStateSpace(SpaceInformation *si);
 

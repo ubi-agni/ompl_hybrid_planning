@@ -59,6 +59,10 @@ public:
 		setStateConfInvalid(state);
 	}
 
+	double getMeasure() const {
+		return 0;
+	}
+
 protected:
 
 	virtual StateSpace* createTaskSpace()
@@ -180,6 +184,8 @@ BOOST_AUTO_TEST_CASE(ControlStateSpace)
 
 	// test directed control sampling
 	control::SpaceInformationPtr spaceInfo(new control::SpaceInformation(stateSpace, controlSpace));
+	boost::shared_ptr<SimpleTaskControlStatePropagator> propagator(new SimpleTaskControlStatePropagator(spaceInfo));
+	spaceInfo->setStatePropagator((control::StatePropagatorPtr)propagator);
 	control::DirectedControlSamplerPtr controlSampler = spaceInfo->allocDirectedControlSampler();
 	StateSamplerPtr stateSampler = spaceInfo->allocStateSampler();
 
