@@ -39,7 +39,7 @@ public:
 			confSpace_->allocDefaultStateSampler()->sampleUniform(confState);
 			if(confState->as<SE2StateSpace::StateType>()->getX() > -0.5) break;
 		}
-		
+
 		setStateConfValid(state);
 		ensureTaskValidity(state->as<StateType>());
 	}
@@ -51,14 +51,14 @@ public:
 
 		// random sample between [-0.5..1, -1..1]
 		while(true) {
-			taskSpace_->allocDefaultStateSampler()->sampleUniform(taskState); 
+			taskSpace_->allocDefaultStateSampler()->sampleUniform(taskState);
 			if(taskState->as<RealVectorStateSpace::StateType>()->values[0] > -0.5) break;
 		}
-		
+
 		setStateTaskValid(state);
 		setStateConfInvalid(state);
 	}
-	
+
 protected:
 
 	virtual StateSpace* createTaskSpace()
@@ -67,7 +67,7 @@ protected:
 		space->setBounds(-1,1);
 		return space;
 	}
-	
+
 	virtual StateSpace* createConfSpace()
 	{
 		SE2StateSpace *space = new SE2StateSpace();
@@ -77,7 +77,7 @@ protected:
 		space->setBounds(bounds);
 		return space;
 	}
-	
+
 	virtual void forwardMapping(const State *conf, State *task) const
 	{
 		const SE2StateSpace::StateType *confCast = conf->as<SE2StateSpace::StateType>();
@@ -93,12 +93,12 @@ protected:
 // dummy state validity checker
 // checks if state is checkable at all, i.e. has
 // associated configuration
-// checks if task x component > -0.5 
+// checks if task x component > -0.5
 class DummyStateValidityChecker : public StateValidityChecker
 {
 public:
 	DummyStateValidityChecker(const SpaceInformationPtr &si)
-	: StateValidityChecker(si)
+		: StateValidityChecker(si)
 	{
 	}
 
@@ -118,16 +118,16 @@ class SimpleTaskControlStatePropagator : public control::TaskControlStatePropaga
 public:
 
 	// state transition, operating in SimpleTaskStateSpace states
-	
+
 	SimpleTaskControlStatePropagator(const control::SpaceInformationPtr &si)
-	: control::TaskControlStatePropagator(si)
+		: control::TaskControlStatePropagator(si)
 	{
 	}
 
 protected:
 
 	void taskControlTransition(const State *taskState, const control::Control* control,
-			                   const double duration, State *resultTaskState) const
+	                           const double duration, State *resultTaskState) const
 	{
 		const RealVectorStateSpace::StateType *taskCast = taskState->as<RealVectorStateSpace::StateType>();
 		const control::RealVectorControlSpace::ControlType *controlCast = control->as<control::RealVectorControlSpace::ControlType>();
@@ -143,9 +143,9 @@ protected:
 		resultTaskCast->values[0] = taskCast->values[0] + resultTaskCast->values[2];
 		resultTaskCast->values[1] = taskCast->values[1] + resultTaskCast->values[3];
 	}
-	
+
 	void confTowardsTaskTransition(const State *confState, const State *taskState,
-			                       const double duration, State *resultConfState) const
+	                               const double duration, State *resultConfState) const
 	{
 		const SE2StateSpace::StateType *confCast = confState->as<SE2StateSpace::StateType>();
 		const RealVectorStateSpace::StateType *taskCast = taskState->as<RealVectorStateSpace::StateType>();
@@ -164,17 +164,17 @@ protected:
 BOOST_AUTO_TEST_CASE(ControlStateSpace)
 {
 	// state space
-    SimpleTaskStateSpacePtr stateSpace(new SimpleTaskStateSpace());
-    stateSpace->setup();
-    stateSpace->printSettings(std::cout);
-    stateSpace->sanityChecks();
+	SimpleTaskStateSpacePtr stateSpace(new SimpleTaskStateSpace());
+	stateSpace->setup();
+	stateSpace->printSettings(std::cout);
+	stateSpace->sanityChecks();
 
 	// control space
-    boost::shared_ptr<control::RealVectorControlSpace> controlSpace(new control::RealVectorControlSpace(stateSpace, 2));
+	boost::shared_ptr<control::RealVectorControlSpace> controlSpace(new control::RealVectorControlSpace(stateSpace, 2));
 	RealVectorBounds bounds(2);
 	bounds.setLow(-1);
 	bounds.setHigh(1);
-    controlSpace->setBounds(bounds);
+	controlSpace->setBounds(bounds);
 	controlSpace->setup();
 	controlSpace->printSettings(std::cout);
 
@@ -186,7 +186,7 @@ BOOST_AUTO_TEST_CASE(ControlStateSpace)
 	control::Control *cntrl = controlSpace->allocControl();
 	State *startState = stateSpace->allocState();
 	State *toState = stateSpace->allocState();
-	
+
 	stateSampler->sampleUniform(startState);
 	stateSampler->sampleUniform(toState);
 	controlSampler->sampleTo(cntrl, startState, toState);
@@ -210,11 +210,11 @@ BOOST_AUTO_TEST_CASE(ControlPropagation)
 	RealVectorBounds bounds(2);
 	bounds.setLow(-1);
 	bounds.setHigh(1);
-    controlSpace->setBounds(bounds);
-    
+	controlSpace->setBounds(bounds);
+
 	stateSpace->setup();
 	controlSpace->setup();
-	
+
 	// create control::SpaceInformation
 	control::SpaceInformationPtr spaceInfo(new control::SpaceInformation(stateSpace, controlSpace));
 	boost::shared_ptr<SimpleTaskControlStatePropagator> propagator(new SimpleTaskControlStatePropagator(spaceInfo));
@@ -225,7 +225,7 @@ BOOST_AUTO_TEST_CASE(ControlPropagation)
 	// set control duration and stepsize
 	spaceInfo->setMinMaxControlDuration(1,100);
 	spaceInfo->setPropagationStepSize(0.1);
-	
+
 	spaceInfo->setup();
 
 	// test propagation:
@@ -278,12 +278,12 @@ BOOST_AUTO_TEST_CASE(ControlPlanning)
 	RealVectorBounds bounds(2);
 	bounds.setLow(-1);
 	bounds.setHigh(1);
-    controlSpace->setBounds(bounds);
-    
+	controlSpace->setBounds(bounds);
+
 	control::SimpleSetupPtr simpleSetup(new control::SimpleSetup(controlSpace));
 	StateValidityCheckerPtr stateChecker(new DummyStateValidityChecker(simpleSetup->getSpaceInformation()));
 	simpleSetup->setStateValidityChecker(stateChecker);
-	
+
 	SimpleTaskControlStatePropagatorPtr propagator(new SimpleTaskControlStatePropagator(simpleSetup->getSpaceInformation()));
 	simpleSetup->setStatePropagator((control::StatePropagatorPtr)propagator);
 
@@ -309,10 +309,10 @@ BOOST_AUTO_TEST_CASE(ControlPlanning)
 
 		startState.print();
 		goalState.print();
-		
-		PlannerStatus solved = simpleSetup->solve(5);	
+
+		PlannerStatus solved = simpleSetup->solve(5);
 		BOOST_CHECK(solved);
-	
+
 		control::PathControl path = simpleSetup->getSolutionPath();
 		path.print(std::cout);
 
@@ -321,6 +321,5 @@ BOOST_AUTO_TEST_CASE(ControlPlanning)
 		stateSpace->printState(startState.get(), std::cout);
 		stateSpace->printState(lastState, std::cout);
 		BOOST_CHECK_SMALL(stateSpace->distance(lastState, goalState.get()), goalThreshold);
-	}	
+	}
 }
-

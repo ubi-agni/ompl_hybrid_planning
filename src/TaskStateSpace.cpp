@@ -10,14 +10,14 @@ void TaskStateSampler::sampleUniform(State *state)
 	taskSampler_->sampleUniform(state->as<TaskStateSpace::StateType>()->taskState_);
 
 	// only task is now valid
-	state->as<TaskStateSpace::StateType>()->validity_ = TaskStateSpace::StateType::TASK_VALID; 
+	state->as<TaskStateSpace::StateType>()->validity_ = TaskStateSpace::StateType::TASK_VALID;
 }
 
 void TaskStateSampler::sampleUniformNear(State *state, const State *near, const double distance)
 {
 	// check task validity of near state
 	space_->as<TaskStateSpace>()->ensureTaskValidity(near->as<TaskStateSpace::StateType>());
-	
+
 	taskSampler_->sampleUniformNear(state->as<TaskStateSpace::StateType>()->taskState_,
 	                                near->as<TaskStateSpace::StateType>()->taskState_, distance);
 
@@ -28,7 +28,7 @@ void TaskStateSampler::sampleGaussian(State *state, const State *mean, const dou
 {
 	// check task validity of mean state
 	space_->as<TaskStateSpace>()->ensureTaskValidity(mean->as<TaskStateSpace::StateType>());
-	
+
 	taskSampler_->sampleGaussian(state->as<TaskStateSpace::StateType>()->taskState_,
 	                             mean->as<TaskStateSpace::StateType>()->taskState_, stdDev);
 
@@ -39,7 +39,7 @@ void TaskStateSampler::sampleGaussian(State *state, const State *mean, const dou
 
 TaskStateSpace::TaskStateSpace()
 {
-	setName("Task" + getName()); 
+	setName("Task" + getName());
 }
 
 TaskStateSpace::~TaskStateSpace()
@@ -73,7 +73,7 @@ void TaskStateSpace::enforceBounds(State *state) const
 	if(!isStateTaskValid(state)) taskSpace_->enforceBounds(state->as<StateType>()->taskState_);
 }
 
-bool TaskStateSpace::satisfiesBounds(const State *state) const 
+bool TaskStateSpace::satisfiesBounds(const State *state) const
 {
 	if(!isStateTaskValid(state)) return true;
 	else return taskSpace_->satisfiesBounds(state->as<StateType>()->taskState_);
@@ -83,21 +83,21 @@ void TaskStateSpace::copyState(State *destination, const State *source) const
 {
 	StateType *destinationCast = destination->as<StateType>();
 	const StateType *sourceCast = source->as<StateType>();
-	
+
 	taskSpace_->copyState(destinationCast->taskState_, sourceCast->taskState_);
 	confSpace_->copyState(destinationCast->confState_, sourceCast->confState_);
 
 	destinationCast->validity_ = sourceCast->validity_;
 }
-            
+
 double TaskStateSpace::distance(const State *state1, const State *state2) const
 {
 	const StateType *state1Cast = state1->as<StateType>();
 	const StateType *state2Cast = state2->as<StateType>();
-	
+
 	ensureTaskValidity(state1Cast);
 	ensureTaskValidity(state2Cast);
-	
+
 	return taskSpace_->distance(state1Cast->taskState_, state2Cast->taskState_);
 }
 
@@ -105,10 +105,10 @@ bool TaskStateSpace::equalStates(const State *state1, const State *state2) const
 {
 	const StateType *state1Cast = state1->as<StateType>();
 	const StateType *state2Cast = state2->as<StateType>();
-	
+
 	ensureTaskValidity(state1Cast);
 	ensureTaskValidity(state2Cast);
-		
+
 	return taskSpace_->equalStates(state1Cast->taskState_, state2Cast->taskState_);
 }
 
@@ -121,7 +121,7 @@ void TaskStateSpace::serialize(void *serialization, const State *state) const
 {
 	taskSpace_->serialize(serialization, state->as<StateType>()->taskState_);
 	unsigned int offset = taskSpace_->getSerializationLength();
-	confSpace_->serialize(static_cast<char*>(serialization) + offset, state->as<StateType>()->confState_); 
+	confSpace_->serialize(static_cast<char*>(serialization) + offset, state->as<StateType>()->confState_);
 }
 
 void TaskStateSpace::deserialize(State *state, const void *serialization) const
@@ -139,17 +139,17 @@ StateSamplerPtr TaskStateSpace::allocDefaultStateSampler(void) const
 }
 
 /*void TaskStateSpace::registerProjections(void)
-{
+  {
 
-}*/
+  }*/
 
 State* TaskStateSpace::allocState(void) const
 {
-    StateType *state = new StateType();
-    state->validity_ = StateType::NONE_VALID;
-    state->taskState_ = taskSpace_->allocState();
-    state->confState_ = confSpace_->allocState();
-    return static_cast<State*>(state);
+	StateType *state = new StateType();
+	state->validity_ = StateType::NONE_VALID;
+	state->taskState_ = taskSpace_->allocState();
+	state->confState_ = confSpace_->allocState();
+	return static_cast<State*>(state);
 }
 
 void TaskStateSpace::freeState(State *state) const
@@ -178,7 +178,7 @@ void TaskStateSpace::printState(const State *state, std::ostream &out) const
 	if(state->as<StateType>()->validity_ & StateType::TASK_VALID) out << " valid\n";
 	else out << " not valid\n";
 	taskSpace_->printState(state->as<StateType>()->taskState_, out);
-	
+
 	out << "Conf: ";
 	if(state->as<StateType>()->validity_ & StateType::CONF_VALID) out << " valid\n";
 	else out << " not valid\n";
@@ -197,7 +197,7 @@ void TaskStateSpace::printSettings(std::ostream &out) const
 unsigned int TaskStateSpace::ensureTaskValidity(const StateType *state) const
 {
 	if(!(state->validity_ & StateType::TASK_VALID) &&
-	    (state->validity_ & StateType::CONF_VALID) ) {
+	   (state->validity_ & StateType::CONF_VALID) ) {
 
 		// compute configuration -> task mapping
 		forwardMapping(state->confState_, state->taskState_);
@@ -234,7 +234,7 @@ void TaskStateSpace::setStateConfInvalid(const State *state) const
 {
 	state->as<StateType>()->validity_ = state->as<StateType>()->validity_ & (~StateType::CONF_VALID);
 }
-			
+
 bool TaskStateSpace::isStateTaskValid(const State *state) const
 {
 	return (state->as<StateType>()->validity_ & StateType::TASK_VALID);
@@ -244,12 +244,12 @@ bool TaskStateSpace::isStateConfValid(const State *state) const
 {
 	return (state->as<StateType>()->validity_ & StateType::CONF_VALID);
 }
-  			
+
 
 
 TaskGeometricStateSpace::TaskGeometricStateSpace()
 {
-	setName("TaskGeometric" + getName()); 
+	setName("TaskGeometric" + getName());
 }
 
 TaskGeometricStateSpace::~TaskGeometricStateSpace()
@@ -276,11 +276,11 @@ void TaskGeometricStateSpace::interpolate(const State *from, const State *to, co
 	// interpolation is done between configurations!
 	// i.e. both states need a valid associated configuration
 	// NOTE: although const here, internal StateType States are modified
-	
+
 	const StateType *fromCast = from->as<StateType>();
 	const StateType *toCast = to->as<StateType>();
 	StateType *resCast = state->as<StateType>();
-	
+
 	ensureConfValidity(fromCast);
 	ensureConfValidity(toCast);
 
@@ -301,7 +301,7 @@ void TaskGeometricStateSpace::makeStateValid(const State *state) const
 unsigned int TaskGeometricStateSpace::ensureConfValidity(const StateType *state) const
 {
 	if( (state->validity_ & StateType::TASK_VALID) &&
-	   !(state->validity_ & StateType::CONF_VALID) ) {
+	    !(state->validity_ & StateType::CONF_VALID) ) {
 
 		// compute task -> configuration mapping
 		inverseMapping(state->taskState_, state->confState_);
@@ -311,7 +311,3 @@ unsigned int TaskGeometricStateSpace::ensureConfValidity(const StateType *state)
 
 	return state->validity_;
 }
-
-
-
-

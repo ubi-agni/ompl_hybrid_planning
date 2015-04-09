@@ -6,13 +6,13 @@ using namespace ompl;
 using namespace ompl::base;
 
 TaskMotionValidator::TaskMotionValidator(SpaceInformation *si)
-: DiscreteMotionValidator(si)
+	: DiscreteMotionValidator(si)
 {
 	taskGeometricStateSpace_ = getAndCheckTaskGeometricStateSpace(si);
 }
 
 TaskMotionValidator::TaskMotionValidator(const SpaceInformationPtr &si)
-: DiscreteMotionValidator(si)
+	: DiscreteMotionValidator(si)
 {
 	taskGeometricStateSpace_ = getAndCheckTaskGeometricStateSpace(si.get());
 }
@@ -46,7 +46,8 @@ bool TaskMotionValidator::checkMotion(const State *s1, const State *s2, std::pai
 	return DiscreteMotionValidator::checkMotion(s1,s2,lastValid);
 }
 
-void TaskMotionValidator::computeMotionCost(const State *s1, const State *s2, double &cost, std::pair<double, double> &bounds) const
+void TaskMotionValidator::computeMotionCost(const State *s1, const State *s2, 
+                                            double &cost, std::pair<double, double> &bounds) const
 {
 	// ensure that both states are valid
 	taskGeometricStateSpace_->makeStateValid(s1);
@@ -54,4 +55,3 @@ void TaskMotionValidator::computeMotionCost(const State *s1, const State *s2, do
 	// pass on to DiscreteMotionValidator
 	DiscreteMotionValidator::computeMotionCost(s1,s2,cost,bounds);
 }
-

@@ -1,36 +1,36 @@
 /*********************************************************************
-* Software License Agreement (BSD License)
-*
-*  Copyright (c) 2010, Your Institution
-*  All rights reserved.
-*
-*  Redistribution and use in source and binary forms, with or without
-*  modification, are permitted provided that the following conditions
-*  are met:
-*
-*   * Redistributions of source code must retain the above copyright
-*     notice, this list of conditions and the following disclaimer.
-*   * Redistributions in binary form must reproduce the above
-*     copyright notice, this list of conditions and the following
-*     disclaimer in the documentation and/or other materials provided
-*     with the distribution.
-*   * Neither the name of the Your Institution nor the names of its
-*     contributors may be used to endorse or promote products derived
-*     from this software without specific prior written permission.
-*
-*  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-*  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-*  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-*  FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-*  COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-*  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-*  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-*  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-*  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-*  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-*  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-*  POSSIBILITY OF SUCH DAMAGE.
-*********************************************************************/
+ * Software License Agreement (BSD License)
+ *
+ *  Copyright (c) 2010, Your Institution
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions
+ *  are met:
+ *
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above
+ *     copyright notice, this list of conditions and the following
+ *     disclaimer in the documentation and/or other materials provided
+ *     with the distribution.
+ *   * Neither the name of the Your Institution nor the names of its
+ *     contributors may be used to endorse or promote products derived
+ *     from this software without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ *  FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ *  COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ *  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ *  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ *  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ *  POSSIBILITY OF SUCH DAMAGE.
+ *********************************************************************/
 
 /* Author: Matthias Behnisch */
 
@@ -74,7 +74,7 @@ public:
 			confSpace_->allocDefaultStateSampler()->sampleUniform(confState);
 			if(confState->as<SE2StateSpace::StateType>()->getX() > -0.5) break;
 		}
-		
+
 		setStateConfValid(state);
 		setStateTaskInvalid(state);
 	}
@@ -86,14 +86,14 @@ public:
 
 		// random sample between [-0.5..1, -1..1]
 		while(true) {
-			taskSpace_->allocDefaultStateSampler()->sampleUniform(taskState); 
+			taskSpace_->allocDefaultStateSampler()->sampleUniform(taskState);
 			if(taskState->as<RealVectorStateSpace::StateType>()->values[0] > -0.5) break;
 		}
-		
+
 		setStateTaskValid(state);
 		setStateConfInvalid(state);
 	}
-	
+
 protected:
 
 	virtual StateSpace* createTaskSpace()
@@ -102,7 +102,7 @@ protected:
 		space->setBounds(-1,1);
 		return space;
 	}
-	
+
 	virtual StateSpace* createConfSpace()
 	{
 		SE2StateSpace *space = new SE2StateSpace();
@@ -112,7 +112,7 @@ protected:
 		space->setBounds(bounds);
 		return space;
 	}
-	
+
 	virtual void forwardMapping(const State *conf, State *task) const
 	{
 		const SE2StateSpace::StateType *confCast = conf->as<SE2StateSpace::StateType>();
@@ -121,7 +121,7 @@ protected:
 		taskCast->values[0] = confCast->getX();
 		taskCast->values[1] = confCast->getY();
 	}
-			
+
 	virtual void inverseMapping(const State *task, State *conf) const
 	{
 		const RealVectorStateSpace::StateType *taskCast = task->as<RealVectorStateSpace::StateType>();
@@ -139,12 +139,12 @@ protected:
 // dummy state validity checker
 // checks if state is checkable at all, i.e. has
 // associated configuration
-// checks if task x component > -0.5 
+// checks if task x component > -0.5
 class DummyStateValidityChecker : public StateValidityChecker
 {
 public:
 	DummyStateValidityChecker(const SpaceInformationPtr &si)
-	: StateValidityChecker(si)
+		: StateValidityChecker(si)
 	{
 	}
 
@@ -167,28 +167,28 @@ public:
 
 BOOST_AUTO_TEST_CASE(GeometricStateSpace)
 {
-    SimpleGeometricTaskStateSpacePtr space(new SimpleGeometricTaskStateSpace());
+	SimpleGeometricTaskStateSpacePtr space(new SimpleGeometricTaskStateSpace());
 
 	// run provided state space tests
-    space->setup();
-    space->sanityChecks();
+	space->setup();
+	space->sanityChecks();
 
-    boost::shared_ptr<ompl::StateSpaceTest> spaceTest(new StateSpaceTest(space));
-    spaceTest->test();
+	boost::shared_ptr<ompl::StateSpaceTest> spaceTest(new StateSpaceTest(space));
+	spaceTest->test();
 
 	space->printSettings(std::cout);
 
-    // check double representation
-    State *state = space->allocState();
+	// check double representation
+	State *state = space->allocState();
 
 	double d[] = {1,2,3,4,5};
 	std::vector<double> data(d, d + 5);
-	
-	space->copyFromReals(state, data);
-    //space->printState(state,std::cout);
 
-    space->copyToReals(data, state); 
-    for(int i = 0; i < 5; ++i) {
+	space->copyFromReals(state, data);
+	//space->printState(state,std::cout);
+
+	space->copyToReals(data, state);
+	for(int i = 0; i < 5; ++i) {
 		//std::cout << data[i] << "\n";
 		BOOST_CHECK(data[i] == d[i]);
 	}
@@ -226,8 +226,8 @@ BOOST_AUTO_TEST_CASE(GeometricPlanning)
 
 		simpleSetup->setStartState(startState);
 		simpleSetup->setGoalState(goalState, goalThreshold);
-		
-		PlannerStatus solved = simpleSetup->solve(5);	
+
+		PlannerStatus solved = simpleSetup->solve(5);
 		BOOST_CHECK(solved);
 
 		geometric::PathGeometric path = simpleSetup->getSolutionPath();
@@ -237,11 +237,8 @@ BOOST_AUTO_TEST_CASE(GeometricPlanning)
 
 		simpleSetup->clear();
 	}
-	
+
 	MotionValidatorPtr validator = simpleSetup->getSpaceInformation()->getMotionValidator();
-	std::cout << "motion validator: " << validator->getValidMotionCount() << " valid, " 
-	                                  << validator->getInvalidMotionCount() << " invalid\n";
+	std::cout << "motion validator: " << validator->getValidMotionCount() << " valid, "
+	          << validator->getInvalidMotionCount() << " invalid\n";
 }
-
-
-

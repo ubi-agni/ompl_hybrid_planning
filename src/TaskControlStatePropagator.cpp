@@ -6,14 +6,14 @@ using namespace ompl;
 using namespace ompl::control;
 
 TaskControlStatePropagator::TaskControlStatePropagator(SpaceInformation* si)
-: StatePropagator(si)
+	: StatePropagator(si)
 {
 	//controlSpace_ = dynamic_cast<TaskControlSpace*>(si->getStateSpace().get());
 	//if(!controlSpace_) throw Exception("TaskControlSpace needed for TaskControlStatePropagator");
 }
 
 TaskControlStatePropagator::TaskControlStatePropagator(const SpaceInformationPtr &si)
-: StatePropagator(si)
+	: StatePropagator(si)
 {
 }
 
@@ -37,7 +37,7 @@ void TaskControlStatePropagator::propagate(const base::State *state, const Contr
 
 	base::State *resultTaskState = result->as<base::TaskStateSpace::StateType>()->taskState_;
 	base::State *resultConfState = result->as<base::TaskStateSpace::StateType>()->confState_;
-	
+
 	// two step propagation:
 	// 1. task level propagation
 	taskControlTransition(taskState, control, duration, resultTaskState);
@@ -46,7 +46,7 @@ void TaskControlStatePropagator::propagate(const base::State *state, const Contr
 	confTowardsTaskTransition(confState, resultTaskState, duration, resultConfState);
 
 	// TODO
-	
+
 	// result should have valid task and conf component now
 	//result->as<base::TaskStateSpace::StateType>()->validity_ = base::TaskStateSpace::StateType::ALL_VALID;
 

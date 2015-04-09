@@ -9,29 +9,28 @@
 
 namespace ompl
 {
-	namespace base
-	{
-		OMPL_CLASS_FORWARD(TaskMotionValidator);
-		class TaskMotionValidator : public DiscreteMotionValidator
-		{
-		public:
-			TaskMotionValidator(SpaceInformation *si);
-			TaskMotionValidator(const SpaceInformationPtr &si);
-			virtual ~TaskMotionValidator();
+namespace base
+{
+OMPL_CLASS_FORWARD(TaskMotionValidator);
+class TaskMotionValidator : public DiscreteMotionValidator
+{
+public:
+	TaskMotionValidator(SpaceInformation *si);
+	TaskMotionValidator(const SpaceInformationPtr &si);
+	virtual ~TaskMotionValidator();
 
-            virtual bool checkMotion(const State *s1, const State *s2) const;
-            virtual bool checkMotion(const State *s1, const State *s2, std::pair<State*, double> &lastValid) const;
+	virtual bool checkMotion(const State *s1, const State *s2) const;
+	virtual bool checkMotion(const State *s1, const State *s2, std::pair<State*, double> &lastValid) const;
 
-			virtual void computeMotionCost(const State *s1, const State *s2, double &cost, std::pair<double, double> &bounds) const;
+	virtual void computeMotionCost(const State *s1, const State *s2, double &cost, std::pair<double, double> &bounds) const;
 
-		protected:
-			TaskGeometricStateSpace* getAndCheckTaskGeometricStateSpace(SpaceInformation *si);
+protected:
+	TaskGeometricStateSpace* getAndCheckTaskGeometricStateSpace(SpaceInformation *si);
 
-			TaskGeometricStateSpace *taskGeometricStateSpace_;
-		};
-	}
+	TaskGeometricStateSpace *taskGeometricStateSpace_;
+};
+}
 }
 
 
 #endif
-
